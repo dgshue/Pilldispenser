@@ -31,6 +31,9 @@ void saveSettings() {
   clockSS = lv_obj_has_state(ui_ScreensaverCHK1, LV_STATE_CHECKED);
   preferences.putBool("clockSS", clockSS);
 
+  clock12hr = lv_obj_has_state(ui_Clock12hrCHK, LV_STATE_CHECKED);
+  preferences.putBool("clock12hr", clock12hr);
+
   dstEnabled = lv_obj_has_state(ui_DSTCHK, LV_STATE_CHECKED);
   preferences.putBool("dstEnabled", dstEnabled);
 
@@ -80,6 +83,9 @@ void loadSettings() {
 
   clockSS = preferences.getBool("clockSS", false);
   lv_obj_add_state(ui_ScreensaverCHK1, clockSS ? LV_STATE_CHECKED : 0);
+
+  clock12hr = preferences.getBool("clock12hr", false);
+  lv_obj_add_state(ui_Clock12hrCHK, clock12hr ? LV_STATE_CHECKED : 0);
 
   dstEnabled = preferences.getBool("dstEnabled", false);
   lv_obj_add_state(ui_DSTCHK, dstEnabled ? LV_STATE_CHECKED : 0);

@@ -86,6 +86,7 @@ lv_obj_t* ui_TrayCheckIMG[11];
 bool internetstatus;
 bool clockSS;
 bool muteSound;
+bool clock12hr;
 bool currentlyplaying;
 int installedTrays;
 bool dstEnabled;
@@ -103,7 +104,7 @@ int lastButtonState = HIGH;  // Previous state of the button
 int buttonState = HIGH;  // Current reading from the button pin
 
 // register stuff
-SPIClass mySpi = SPIClass(VSPI);
+// mySpi removed: XPT2046 uses default VSPI (SPI), TFT_eSPI uses HSPI (USE_HSPI_PORT)
 AsyncWebServer server(80);
 Preferences preferences;
 XPT2046_Touchscreen ts(XPT2046_CS, XPT2046_IRQ);
@@ -133,8 +134,8 @@ void setup() {
   pwm.begin();
   pwm.setPWMFreq(60);
 
-  myDFPlayer.begin(Serial2);
-  myDFPlayer.volume(1);  //Set volume value. From 0 to 30
+  myDFPlayer.begin(Serial2, false);  //Disable ACK mode to prevent blocking
+  myDFPlayer.volume(10);  //Set initial volume, updated after loadSettings()
 
   pixels.begin();
 
@@ -143,8 +144,8 @@ void setup() {
 #if LV_USE_LOG != 0
   lv_log_register_print_cb( my_print ); /* register print function for debugging */
 #endif
-  mySpi.begin(XPT2046_CLK, XPT2046_MISO, XPT2046_MOSI, XPT2046_CS);
-  ts.begin(mySpi);
+  SPI.begin(XPT2046_CLK, XPT2046_MISO, XPT2046_MOSI, XPT2046_CS);
+  ts.begin();
   ts.setRotation(3);
   tft.begin();
   tft.setRotation(3);
@@ -236,6 +237,7 @@ void setup() {
   pixels.setBrightness(50);
   pixels.show();
   loadSettings();
+  myDFPlayer.volume(spkvolume);  //Set volume from saved settings
 }
 
 

@@ -266,8 +266,12 @@ void setupTime() {
 static void update_time_label(lv_timer_t * timer) {
   struct tm timeinfo;
   if (getLocalTime(&timeinfo)) {
-    char timeString[6]; // Enough space for "HH:MM\0"
-    strftime(timeString, sizeof(timeString), "%H:%M", &timeinfo);
+    char timeString[12]; // Enough for "12:30 AM\0" or "HH:MM\0"
+    if (clock12hr) {
+      strftime(timeString, sizeof(timeString), "%I:%M %p", &timeinfo);
+    } else {
+      strftime(timeString, sizeof(timeString), "%H:%M", &timeinfo);
+    }
     lv_label_set_text(ui_ClockLBL, timeString);
     lv_label_set_text(ui_ClockSCRLBL, timeString);
 

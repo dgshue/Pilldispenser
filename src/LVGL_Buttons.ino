@@ -22,6 +22,7 @@ static void VolTestBTN_event_handler(lv_event_t * e) { // Test Volume Button
   lv_event_code_t code = lv_event_get_code(e);
   if (code == LV_EVENT_CLICKED) {
     spkvolume = lv_slider_get_value(ui_VolSlider);
+    myDFPlayer.volume(spkvolume);
     Playsound(2);
   }
 }

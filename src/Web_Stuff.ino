@@ -39,6 +39,16 @@ String processor(const String& var) {
     }
     buttons += "<label class=\"switch\"><input type=\"checkbox\"  name=\"clockSS\" id=\"clockSS\" " + outputStateValue + "><span class=\"slider\"></span></label>";
     return buttons;
+  } else if (var == "CLOCK12HR") {
+    String buttons = "";
+    String outputStateValue;
+    if (clock12hr) {
+      outputStateValue = "checked";
+    } else {
+      outputStateValue = "";
+    }
+    buttons += "<label class=\"switch\"><input type=\"checkbox\"  name=\"clock12hr\" id=\"clock12hr\" " + outputStateValue + "><span class=\"slider\"></span></label>";
+    return buttons;
   } else if (var == "DSTENA") {
     String buttons = "";
     String outputStateValue;
@@ -618,6 +628,7 @@ void webroute() {
     clockSS = false;
     muteSound = false;
     enabledpasscode = false;
+    clock12hr = false;
 
     if (request->hasParam("passcodetext")) {
       String valueout = request->getParam("passcodetext")->value();
@@ -645,6 +656,7 @@ void webroute() {
     if (request->hasParam("spkvolume")) {
       String valueout = request->getParam("spkvolume")->value();
       spkvolume = valueout.toInt() + 1;
+      myDFPlayer.volume(spkvolume);
       preferences.putInt("spkvolume", spkvolume);
     }
     if (request->hasParam("alertinterval")) {
@@ -655,10 +667,12 @@ void webroute() {
     if (request->hasParam("dstEnabled")) dstEnabled = true;
     if (request->hasParam("clockSS")) clockSS = true;
     if (request->hasParam("mutebutton")) muteSound = true;
+    if (request->hasParam("clock12hr")) clock12hr = true;
 
     preferences.putBool("dstEnabled", dstEnabled);
     preferences.putBool("clockSS", clockSS);
     preferences.putBool("muteSound", muteSound);
+    preferences.putBool("clock12hr", clock12hr);
 
     // Handle time settings
     if (request->hasParam("resettime")) {
